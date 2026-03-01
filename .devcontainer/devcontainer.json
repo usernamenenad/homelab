@@ -1,0 +1,31 @@
+{
+    "name": "Terraform & Kubernetes",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "remoteUser": "vscode",
+    "containerUser": "vscode",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "hashicorp.terraform",
+                "ms-kubernetes-tools.vscode-kubernetes-tools"
+            ],
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "[terraform]": {
+                    "editor.defaultFormatter": "hashicorp.terraform",
+                    "editor.formatOnSave": true
+                }
+            }
+        }
+    },
+    "mounts": [
+        "source=${localEnv:HOME}/.kube,target=/home/vscode/.kube,type=bind,consistency=cached",
+        "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
+    ],
+    "remoteEnv": {
+        "TF_VAR_hcloud_token": "${localEnv:TF_VAR_hcloud_token}"
+    },
+    "postCreateCommand": "terraform -version && kubectl version --client"
+}
