@@ -16,11 +16,13 @@ spec:
       values: |
         service:
           annotations:
-            load-balancer.hetzner.cloud/id: "5896630"
+            load-balancer.hetzner.cloud/location: "nbg1"
             load-balancer.hetzner.cloud/use-private-ip: "true"
             load-balancer.hetzner.cloud/health-check-port: "15021"
             load-balancer.hetzner.cloud/health-check-protocol: "tcp"
-
+            load-balancer.hetzner.cloud/name: "homelab-lb"
+        nodeSelector:
+          node-role.kubernetes.io/control-plane: "true"
   destination:
     server: https://kubernetes.default.svc
     namespace: istio-system
