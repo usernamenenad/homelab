@@ -18,9 +18,22 @@ spec:
           annotations:
             load-balancer.hetzner.cloud/location: "nbg1"
             load-balancer.hetzner.cloud/use-private-ip: "true"
-            load-balancer.hetzner.cloud/health-check-port: "15021"
-            load-balancer.hetzner.cloud/health-check-protocol: "tcp"
             load-balancer.hetzner.cloud/name: "homelab-lb"
+            load-balancer.hetzner.cloud/protocol: "tcp"
+            load-balancer.hetzner.cloud/uses-proxyprotocol: "false"
+          ports:
+            - name: status-port
+              port: 15021
+              protocol: TCP
+              targetPort: 15021
+            - name: http2
+              port: 80
+              protocol: TCP
+              targetPort: 8080
+            - name: https
+              port: 443
+              protocol: TCP
+              targetPort: 8443
         nodeSelector:
           node-role.kubernetes.io/control-plane: "true"
   destination:
