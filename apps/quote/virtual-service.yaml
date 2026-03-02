@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: quote-vs
+  namespace: app-quote
+spec:
+  hosts:
+    - quote.nenad.cloud
+  gateways:
+    - istio-system/istio-gateway
+  http:
+    - route:
+        - destination:
+            host: quote
+            port:
+              number: 80
