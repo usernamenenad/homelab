@@ -25,10 +25,8 @@ variable "servers" {
   }))
 }
 
-variable "load_balancer" {
-  type = object({
-    name     = string
-    type     = string
-    location = string
-  })
+variable "k3s_token" {
+  description = "Shared secret used by k3s nodes to join the cluster"
+  sensitive   = true
+  type        = string
 }

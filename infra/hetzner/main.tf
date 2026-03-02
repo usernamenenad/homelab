@@ -18,6 +18,7 @@ locals {
         type     = cfg.type
         image    = cfg.image
         location = cfg.location
+        role     = role
       }
     }
   ]...)
@@ -37,8 +38,23 @@ module "network" {
   network_zone     = var.network.zone
 }
 
+
+module "control_plane_init" {
+  source = "./modules/server"
+
+  server_name        = "control-0"
+  server_type        = var.servers["control"].type
+  server_image       = var.servers["control"].image
+  server_location    = var.servers["control"].location
+  server_network_id  = module.network.network_id
+  server_ssh_key_ids = [for k in hcloud_ssh_key.keys : k.id]
+  k3s_role           = "server"
+  k3s_token          = var.k3s_token
+  is_initial_server  = true
+}
+
 module "servers" {
-  for_each = local.server_instances
+  for_each = { for k, v in local.server_instances : k => v if k != "control-0" }
   source   = "./modules/server"
 
   server_name        = each.key
@@ -47,13 +63,9 @@ module "servers" {
   server_location    = each.value.location
   server_network_id  = module.network.network_id
   server_ssh_key_ids = [for k in hcloud_ssh_key.keys : k.id]
-}
+  k3s_role           = each.value.role == "control" ? "server" : "agent"
+  k3s_token          = var.k3s_token
+  k3s_server_url     = "https://${module.control_plane_init.private_ip}:6443"
 
-module "load_balancers" {
-  source = "./modules/load_balancer"
-
-  load_balancer_name       = var.load_balancer.name
-  load_balancer_type       = var.load_balancer.type
-  load_balancer_location   = var.load_balancer.location
-  load_balancer_network_id = module.network.network_id
+  depends_on = [module.control_plane_init]
 }

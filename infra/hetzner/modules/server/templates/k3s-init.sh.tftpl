@@ -1,0 +1,27 @@
+#!/bin/bash
+set -euo pipefail
+
+export INSTALL_K3S_CHANNEL="stable"
+export K3S_TOKEN="${k3s_token}"
+
+%{ if k3s_role == "server" ~}
+# --- Control plane node ---
+export INSTALL_K3S_EXEC="server \
+  --disable-cloud-controller \
+  --disable=traefik \
+  --disable=servicelb \
+  --kubelet-arg=cloud-provider=external \
+%{ if !is_initial_server ~}
+  --server=${k3s_server_url} \
+%{ endif ~}
+  --tls-san=$(hostname)"
+
+%{ else ~}
+# --- Worker node ---
+export INSTALL_K3S_EXEC="agent \
+  --kubelet-arg=cloud-provider=external"
+export K3S_URL="${k3s_server_url}"
+
+%{ endif ~}
+
+curl -sfL https://get.k3s.io | sh -
