@@ -4,6 +4,7 @@ metadata:
   name: argocd-cm
   namespace: argocd
 data:
+  admin.enabled: "false"
   url: https://argocd.nenad.cloud
   oidc.config: |
     name: Azure
