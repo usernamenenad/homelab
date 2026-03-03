@@ -7,7 +7,7 @@ spec:
   project: apps
   source:
     repoURL: https://zekker6.github.io/helm-charts/
-    chart: zekker6/memos
+    chart: memos
     targetRevision: 0.51.0
     helm:
       values: |
