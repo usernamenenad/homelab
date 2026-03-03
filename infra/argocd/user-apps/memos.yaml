@@ -13,8 +13,8 @@ spec:
     helm:
       values: |
         PVC:
-          enabled: false
-          storageClass: "local"
+          enabled: true
+          storageClass: "hcloud-volumes"
           existingClaim: ""
           accessMode: ReadWriteOnce
           size: 10Gi
