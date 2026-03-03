@@ -12,12 +12,12 @@ spec:
     targetRevision: 0.51.0
     helm:
       values: |
-        PVC:
-          enabled: true
-          storageClass: "hcloud-volumes"
-          existingClaim: ""
-          accessMode: ReadWriteOnce
-          size: 10Gi
+        persistence:
+          data:
+            enabled: true
+            storageClass: "hcloud-volumes"
+            accessMode: ReadWriteOnce
+            size: 10Gi
   destination:
     server: https://kubernetes.default.svc
     namespace: app-memos
