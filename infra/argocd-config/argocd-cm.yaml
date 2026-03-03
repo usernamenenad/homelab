@@ -21,4 +21,4 @@ data:
         essential: true
       upn:
         essential: true
-    usernameClaim: upn
+    usernameClaim: preferred_username
