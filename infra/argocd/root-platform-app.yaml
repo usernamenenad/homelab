@@ -1,4 +1,33 @@
 apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: platform
+  namespace: argocd
+spec:
+  description: platform
+
+  sourceRepos:
+    - https://github.com/usernamenenad/homelab
+    - https://charts.jetstack.io
+    - https://istio-release.storage.googleapis.com/charts
+    - https://charts.hetzner.cloud
+
+  destinations:
+    - namespace: argocd
+      server: https://kubernetes.default.svc
+    - namespace: "*"
+      server: https://kubernetes.default.svc
+
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"
+
+---
+apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: root-platform
