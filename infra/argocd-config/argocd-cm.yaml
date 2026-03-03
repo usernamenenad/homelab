@@ -17,4 +17,8 @@ data:
     requestedIDTokenClaims:
       groups:
         essential: true
-    usernameClaim: email
+      email:
+        essential: true
+      upn:
+        essential: true
+    usernameClaim: upn
