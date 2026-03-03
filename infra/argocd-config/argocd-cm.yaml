@@ -17,3 +17,4 @@ data:
     requestedIDTokenClaims:
       groups:
         essential: true
+    usernameClaim: email
