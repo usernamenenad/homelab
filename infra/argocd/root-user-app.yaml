@@ -4,7 +4,7 @@ metadata:
   name: root-user
   namespace: argocd
 spec:
-  project: default
+  project: apps
   source:
     repoURL: https://github.com/usernamenenad/homelab
     targetRevision: main
