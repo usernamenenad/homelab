@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: memos-vs
+  namespace: app-memos
+spec:
+  hosts:
+    - memos.nenad.cloud
+  gateways:
+    - istio-system/istio-gateway
+  http:
+    - route:
+        - destination:
+            host: app-memos
+            port:
+              number: 5230

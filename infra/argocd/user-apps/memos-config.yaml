@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-memos-config
+  app: memos
+  namespace: argocd
+spec:
+  project: apps
+  source:
+    repoURL: https://github.com/usernamenenad/homelab
+    targetRevision: main
+    path: apps/memos
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: app-memos
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
