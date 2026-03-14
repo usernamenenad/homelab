@@ -16,6 +16,22 @@ spec:
       containers:
         - name: linkding
           image: ghcr.io/sissbruecker/linkding:latest
+          env:
+            - name: LD_DB_ENGINE
+              value: postgres
+            - name: LD_DB_DATABASE
+              value: linkding
+            - name: LD_DB_USER
+              value: linkding
+            - name: LD_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-cluster-linkding-creds
+                  key: password
+            - name: LD_DB_HOST
+              value: pg-cluster-linkding-rw.pg-cluster-linkding.svc.cluster.local
+            - name: LD_DB_PORT
+              value: "5432"
           resources:
             requests:
               cpu: 50m
