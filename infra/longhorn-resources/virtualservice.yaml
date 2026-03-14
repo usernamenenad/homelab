@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: longhorn-vs
+  namespace: longhorn-system
+spec:
+  hosts:
+    - longhorn.nenad.cloud
+  gateways:
+    - istio-ingress/homelab-gateway
+  http:
+    - route:
+        - destination:
+            host: longhorn-frontend.longhorn-system.svc.cluster.local
+            port:
+              number: 80
