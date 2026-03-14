@@ -3,6 +3,8 @@ kind: Application
 metadata:
   name: root-apps
   namespace: argocd
+  labels:
+    component: root-apps
 spec:
   syncPolicy:
     automated:
