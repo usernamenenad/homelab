@@ -1,24 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: istio-resources
+  name: argocd-resources
   namespace: argocd
-  labels:
-    component: istio
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
   project: platform
   source:
     repoURL: https://github.com/usernamenenad/homelab.git
-    targetRevision: main
-    path: argocd/istio-resources
+    path: infra/argocd-resources
+    targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
-    namespace: istio-ingress
+    namespace: argocd
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=true

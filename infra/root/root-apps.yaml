@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: root-platform
+  name: root-apps
   namespace: argocd
 spec:
   syncPolicy:
@@ -12,7 +12,7 @@ spec:
   source:
     repoURL: https://github.com/usernamenenad/homelab.git
     targetRevision: main
-    path: argocd/platform
+    path: infra/apps
     directory:
       recurse: true
   destination:
