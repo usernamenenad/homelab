@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: apps-linkding
+  namespace: argocd
+  labels:
+    component: apps
+spec:
+  project: apps
+  source:
+    repoURL: https://github.com/usernamenenad/homelab.git
+    path: apps/linkding
+    targetRevision: HEAD
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-ingress
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
