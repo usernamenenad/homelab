@@ -49,14 +49,15 @@ spec:
               auto_login: true
               client_id: $__env{OIDC_CLIENT_ID}
               client_secret: $__env{OIDC_CLIENT_SECRET}
-              scopes: openid profile email
+              scopes: openid profile email GroupMember.Read.All
               auth_url: https://login.microsoftonline.com/$__env{OIDC_TENANT_ID}/oauth2/v2.0/authorize
               token_url: https://login.microsoftonline.com/$__env{OIDC_TENANT_ID}/oauth2/v2.0/token
               api_url: https://graph.microsoft.com/oidc/userinfo
               use_pkce: true
-              role_attribute_strict: false
+              role_attribute_strict: true
+              role_attribute_path: >-
+                contains(groups[*], '44a3ad02-dab7-4694-b584-3cb0d3a5d7cc') && 'Admin' || 'Viewer'
               allow_assign_grafana_admin: true
-              auto_assign_org_role: Admin
 
           envFromSecret: grafana-oidc-creds
 
