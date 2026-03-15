@@ -23,7 +23,7 @@ spec:
           cm:
             url: https://argocd.nenad.cloud
             oidc.config: |
-              name: Homelab
+              name: Nenad Cloud
               issuer: https://login.microsoftonline.com/c4004238-4e8c-4297-95f8-a776f05a1bd8/v2.0
               clientId: ec22b838-f2dd-42b6-a472-4fd0e730e884
               clientSecret: $oidc.entra.clientSecret
