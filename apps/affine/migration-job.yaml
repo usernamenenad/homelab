@@ -22,7 +22,7 @@ spec:
                   name: pg-cluster-affine-creds
                   key: password
             - name: DATABASE_URL
-              value: posgresql://$(DATABASE_USER):$(DATABASE_PASSWORD)@pg-cluster-affine-rw.pg-cluster-affine.svc.cluster.local:5432/affine
+              value: postgresql://$(DATABASE_USER):$(DATABASE_PASSWORD)@pg-cluster-affine-rw.pg-cluster-affine.svc.cluster.local:5432/affine
             - name: AFFINE_INDEXER_ENABLED
               value: "true"
           command: ["sh", "-c", "-wle", "node ./scripts/self-host-predeploy.js"]
