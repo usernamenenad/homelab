@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: affine-vs
+  namespace: apps-affine
+spec:
+  hosts:
+    - notes.nenad.cloud
+  gateways:
+    - istio-ingress/homelab-gateway
+  http:
+    - route:
+        - destination:
+            host: affine-svc
+            port:
+              number: 80

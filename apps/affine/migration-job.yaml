@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: myjob
+spec:
+  template:
+    spec:
+      containers:
+        - name: affine-migrate
+          image: ghcr.io/toeverything/affine:stable
+          env:
+            - name: REDIS_SERVER_HOST
+              value: redis-affine-master.redis-affine.svc.cluster.local
+            - name: DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pg-cluster-affine-creds
+                  key: username
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-cluster-affine-creds
+                  key: password
+            - name: DATABASE_URL
+              value: posgresql://$(DATABASE_USER):$(DATABASE_PASSWORD)@pg-cluster-affine-rw.pg-cluster-affine.svc.cluster.local:5432/affine
+            - name: AFFINE_INDEXER_ENABLED
+              value: "true"
+          command: ["sh", "-c", "-wle", "node ./scripts/self-host-predeploy.js"]
+      restartPolicy: Never

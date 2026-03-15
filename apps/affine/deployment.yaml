@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: affine-app
+  namespace: apps-affine
+spec:
+  selector:
+    matchLabels:
+      app: affine
+  template:
+    metadata:
+      labels:
+        app: affine
+    spec:
+      containers:
+        - name: affine
+          image: ghcr.io/toeverything/affine:stable
+          env:
+            - name: REDIS_SERVER_HOST
+              value: redis-affine-master.redis-affine.svc.cluster.local
+            - name: DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pg-cluster-affine-creds
+                  key: user
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-cluster-affine-creds
+                  key: password
+            - name: DATABASE_URL
+              value: posgresql://$(DATABASE_USER):$(DATABASE_PASSWORD)@pg-cluster-affine-rw.pg-cluster-affine.svc.cluster.local:5432/affine
+            - name: AFFINE_INDEXER_ENABLED
+              value: "true"
+          resources:
+            requests:
+              cpu: 256m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi

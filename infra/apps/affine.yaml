@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: apps-linkding
+  name: apps-affine
   namespace: argocd
   labels:
     component: apps
@@ -9,11 +9,11 @@ spec:
   project: apps
   source:
     repoURL: https://github.com/usernamenenad/homelab.git
-    path: apps/linkding
+    path: apps/affine
     targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
-    namespace: apps-linkding
+    namespace: apps-affine
   syncPolicy:
     automated:
       prune: true
