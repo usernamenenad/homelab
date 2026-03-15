@@ -32,6 +32,8 @@ spec:
               value: postgresql://$(DATABASE_USER):$(DATABASE_PASSWORD)@pg-cluster-affine-rw.pg-cluster-affine.svc.cluster.local:5432/affine
             - name: AFFINE_INDEXER_ENABLED
               value: "false"
+            - name: AFFINE_SERVER_EXTERNAL_URL
+              value: "https://notes.nenad.cloud"
           resources:
             requests:
               cpu: 256m
