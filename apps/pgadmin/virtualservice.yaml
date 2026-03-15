@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pgadmin-vs
+  namespace: apps-pgadmin
+spec:
+  hosts:
+    - pgadmin.nenad.cloud
+  gateways:
+    - istio-ingress/homelab-gateway
+  http:
+    - route:
+        - destination:
+            host: pgadmin-svc
+            port:
+              number: 80

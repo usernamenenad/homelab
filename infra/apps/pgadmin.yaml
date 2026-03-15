@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pgadmin
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  project: pgadmin
+  source:
+    repoURL: https://github.com/usernamenenad/homelab.git
+    path: apps/pgadmin
+    targetRevision: HEAD
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: apps-pgadmin
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
