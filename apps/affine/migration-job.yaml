@@ -28,6 +28,6 @@ spec:
             - name: DATABASE_URL
               value: postgresql://$(DATABASE_USER):$(DATABASE_PASSWORD)@pg-cluster-affine-rw.pg-cluster-affine.svc.cluster.local:5432/affine
             - name: AFFINE_INDEXER_ENABLED
-              value: "true"
+              value: "false"
           command: ["sh", "-c", "node ./scripts/self-host-predeploy.js"]
       restartPolicy: Never
