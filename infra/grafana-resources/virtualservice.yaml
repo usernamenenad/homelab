@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: grafana-vs
+  namespace: monitoring
+spec:
+  hosts:
+    - grafana.nenad.cloud
+  gateways:
+    - istio-ingress/homelab-gateway
+  http:
+    - route:
+        - destination:
+            host: kube-prometheus-stack-grafana.monitoring.svc.cluster.local
+            port:
+              number: 80

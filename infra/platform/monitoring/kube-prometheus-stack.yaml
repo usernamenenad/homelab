@@ -1,0 +1,107 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  namespace: argocd
+  labels:
+    component: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: platform
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: kube-prometheus-stack
+    targetRevision: "82.10.4"
+    helm:
+      values: |
+        prometheus:
+          prometheusSpec:
+            retention: 7d
+            storageSpec:
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: longhorn
+                  accessModes: [ReadWriteOnce]
+                  resources:
+                    requests:
+                      storage: 20Gi
+            podMonitorNamespaceSelector: {}
+            serviceMonitorNamespaceSelector: {}
+            podMonitorSelector: {}
+            serviceMonitorSelector: {}
+
+        grafana:
+          persistence:
+            enabled: true
+            storageClassName: longhorn
+            size: 5Gi
+
+          grafana.ini:
+            server:
+              root_url: https://grafana.nenad.cloud
+            auth:
+              disable_login_form: true
+            auth.generic_oauth:
+              enabled: true
+              name: Microsoft Entra ID
+              icon: microsoft
+              auto_login: true
+              client_id: $__env{OIDC_CLIENT_ID}
+              client_secret: $__env{OIDC_CLIENT_SECRET}
+              scopes: openid profile email
+              auth_url: https://login.microsoftonline.com/$__env{OIDC_TENANT_ID}/oauth2/v2.0/authorize
+              token_url: https://login.microsoftonline.com/$__env{OIDC_TENANT_ID}/oauth2/v2.0/token
+              api_url: https://graph.microsoft.com/oidc/userinfo
+              use_pkce: true
+              role_attribute_strict: false
+              allow_assign_grafana_admin: true
+              auto_assign_org_role: Admin
+
+          envFromSecret: grafana-oidc-creds
+
+          additionalDataSources:
+            - name: Loki
+              type: loki
+              url: http://loki.monitoring.svc.cluster.local:3100
+              access: proxy
+              isDefault: false
+
+        alertmanager:
+          alertmanagerSpec:
+            storage:
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: longhorn
+                  accessModes: [ReadWriteOnce]
+                  resources:
+                    requests:
+                      storage: 2Gi
+
+        kubeEtcd:
+          enabled: false
+        kubeControllerManager:
+          enabled: false
+        kubeScheduler:
+          enabled: false
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    ignoreDifferences:
+      - group: admissionregistration.k8s.io
+        kind: MutatingWebhookConfiguration
+        jsonPointers:
+          - /webhooks/0/failurePolicy
+      - group: ""
+        kind: Secret
+        name: grafana-oidc-creds
+        jsonPointers:
+          - /data
