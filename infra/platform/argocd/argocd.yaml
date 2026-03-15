@@ -18,6 +18,32 @@ spec:
         server:
           extraArgs:
             - --insecure
+
+        configs:
+          cm:
+            url: https://argocd.nenad.cloud
+            oidc.config: |
+              name: Homelab
+              issuer: https://login.microsoftonline.com/c4004238-4e8c-4297-95f8-a776f05a1bd8/v2.0
+              clientId: ec22b838-f2dd-42b6-a472-4fd0e730e884
+              clientSecret: $oidc.entra.clientSecret
+              requestedScopes:
+                - openid
+                - profile
+                - email
+              requestedIDTokenClaims:
+                groups:
+                  essential: true
+
+          rbac:
+            policy.csv: |
+              g, a160d2c0-8dfc-471c-a613-fab5c501a9d1, role:admin
+            policy.default: role:readonly
+            scopes: '[groups, email]'
+          
+          secret:
+            extra:
+              oidc.entra.clientSecret: $argocd-oidc-creds: clientSecret
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
