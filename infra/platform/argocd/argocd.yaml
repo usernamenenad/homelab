@@ -37,7 +37,7 @@ spec:
 
           rbac:
             policy.csv: |
-              g, a160d2c0-8dfc-471c-a613-fab5c501a9d1, role:admin
+              g, a5913b87-0ce6-4a96-ab74-266936a3c4e1, role:admin
             policy.default: role:readonly
             scopes: '[groups, email]'
 
