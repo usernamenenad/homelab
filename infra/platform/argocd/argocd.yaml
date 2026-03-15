@@ -40,10 +40,10 @@ spec:
               g, a160d2c0-8dfc-471c-a613-fab5c501a9d1, role:admin
             policy.default: role:readonly
             scopes: '[groups, email]'
-          
+
           secret:
             extra:
-              oidc.entra.clientSecret: $argocd-oidc-creds: clientSecret
+              oidc.entra.clientSecret: $argocd-oidc-creds:clientSecret
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
