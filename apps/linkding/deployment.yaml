@@ -13,25 +13,116 @@ spec:
       labels:
         app: linkding
     spec:
+      initContainers:
+        - name: create-superuser
+          image: sissbruecker/linkding:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              python manage.py shell -c "
+              from django.contrib.auth.models import User
+              if not User.objects.filter(email='nenad@nenad.cloud').exists():
+                  u = User.objects.create_superuser('nenad@nenad.cloud', 'nenad@nenad.cloud', None)
+                  print('Superuser created')
+              else:
+                  print('Superuser already exists')
+              "
+          env:
+            - name: LD_DB_ENGINE
+              value: postgres
+
+            - name: LD_DB_HOST
+              value: pg-cluster-linkding-rw.pg-cluster-linkding.svc.cluster.local
+
+            - name: LD_DB_DATABASE
+              value: linkding
+
+            - name: LD_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pg-cluster-linkding-creds
+                  key: username
+
+            - name: LD_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-cluster-linkding-creds
+                  key: password
+
       containers:
         - name: linkding
           image: ghcr.io/sissbruecker/linkding:latest
           env:
             - name: LD_DB_ENGINE
               value: postgres
+
             - name: LD_DB_DATABASE
               value: linkding
+
             - name: LD_DB_USER
               value: linkding
+
             - name: LD_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: pg-cluster-linkding-creds
                   key: password
+
             - name: LD_DB_HOST
               value: pg-cluster-linkding-rw.pg-cluster-linkding.svc.cluster.local
+
             - name: LD_DB_PORT
               value: "5432"
+
+            - name: LD_ENABLE_OIDC
+              value: "True"
+
+            - name: LD_DISABLE_LOGIN_FORM
+              value: "True"
+
+            - name: OIDC_RP_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: linkding-oidc-creds
+                  key: OIDC_RP_CLIENT_ID
+
+            - name: OIDC_RP_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: linkding-oidc-creds
+                  key: OIDC_RP_CLIENT_SECRET
+
+            - name: OIDC_OP_AUTHORIZATION_ENDPOINT
+              value: https://login.microsoftonline.com/c4004238-4e8c-4297-95f8-a776f05a1bd8/oauth2/v2.0/authorize
+
+            - name: OIDC_OP_TOKEN_ENDPOINT
+              value: https://login.microsoftonline.com/c4004238-4e8c-4297-95f8-a776f05a1bd8/oauth2/v2.0/token
+
+            - name: OIDC_OP_USER_ENDPOINT
+              value: https://graph.microsoft.com/oidc/userinfo
+
+            - name: OIDC_OP_JWKS_ENDPOINT
+              value: https://login.microsoftonline.com/c4004238-4e8c-4297-95f8-a776f05a1bd8/discovery/v2.0/keys
+
+            - name: OIDC_RP_SIGN_ALGO
+              value: RS256
+
+            - name: OIDC_USE_PKCE
+              value: "True"
+
+            - name: OIDC_RP_SCOPES
+              value: openid email profile
+
+            - name: OIDC_USERNAME_CLAIM
+              value: preferred_username
+
+            - name: LD_CSRF_TRUSTED_ORIGINS
+              value: https://linkding.nenad.cloud
+
+            - name: LD_USE_X_FORWARDED_HOST
+              value: "true"
+
           resources:
             requests:
               cpu: 50m
