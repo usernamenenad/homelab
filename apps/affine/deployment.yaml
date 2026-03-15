@@ -34,6 +34,8 @@ spec:
               value: "false"
             - name: AFFINE_SERVER_EXTERNAL_URL
               value: "https://notes.nenad.cloud"
+            - name: UPLOAD_LOCATION
+              value: /root/.affine/storage
           resources:
             requests:
               cpu: 256m
@@ -41,3 +43,11 @@ spec:
             limits:
               cpu: 1000m
               memory: 1Gi
+          volumeMounts:
+            - name: affine-storage
+              mountPath: /root/.affine/storage
+
+      volumes:
+        - name: affine-storage
+          persistentVolumeClaim:
+            claimName: affine-pvc
