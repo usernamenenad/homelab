@@ -22,7 +22,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: pg-cluster-affine-creds
-                  key: user
+                  key: username
             - name: DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
