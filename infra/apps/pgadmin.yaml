@@ -5,6 +5,8 @@ metadata:
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "3"
+  labels:
+    component: apps
 spec:
   project: apps
   source:
