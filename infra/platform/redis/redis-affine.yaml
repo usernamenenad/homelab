@@ -1,0 +1,61 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: redis-affine
+  namespace: argocd
+  labels:
+    component: redis
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: platform
+  source:
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: redis
+    targetRevision: "*"
+    helm:
+      values: |
+        architecture: replication                            
+
+        auth:
+          enabled: false
+
+        master:
+          persistence:
+            enabled: true
+            storageClass: longhorn
+            size: 5Gi
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 50m
+            limits:
+              memory: 512Mi
+              cpu: 200m
+
+        replica:
+          replicaCount: 2
+          persistence:
+            enabled: true
+            storageClass: longhorn
+            size: 5Gi
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 50m
+            limits:
+              memory: 512Mi
+              cpu: 200m
+
+        metrics:
+          enabled: true
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: redis-affine
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
